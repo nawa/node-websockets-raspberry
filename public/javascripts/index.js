@@ -1,13 +1,5 @@
 (function ($) {
     $(window).load(function () {
-        $('#times').on('change', function(evt){
-            if(evt.target.value){
-                $('#times-label').text(evt.target.value + 's');
-            }else{
-                alert("Unknown value");
-            }
-        });
-
         var socket = io.connect('/');
         socket.on('notification', function (data) {
             $('#temp1').text(data.temp1);
@@ -18,6 +10,15 @@
             $('#smoke2').text(data.smoke2);
             $('#console-out').append('<p>' + data.info + '</p>');
             $('#console-out').animate({scrollTop: $('#console-out').prop("scrollHeight")}, 500);
+        });
+
+        $('#times').on('change', function(evt){
+            if(evt.target.value){
+                $('#times-label').text(evt.target.value + 's');
+                socket.emit('updateRefreshInterval', evt.target.value);
+            }else{
+                alert("Unknown value");
+            }
         });
     });
 })(jQuery);

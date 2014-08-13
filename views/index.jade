@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    p Refresh every&nbsp;
+        span(id="times-label") 3s&nbsp;
+        input(type="number",name="times",id="times",min="1",max="60",step="1",value="3")
+    p
+        fieldset
+            legend Sensor information
+            div Temp-Sensor 1:
+                span(id="temp1") 111
+            div Temp-Sensor 2:
+                span(id="temp2") 111
+            div Door-Sensor 1:
+                span(id="door1") Open
+            div Door-Sensor 2:
+                span(id="door2") Closed
+            div Smoke-Sensor 1:
+                span(id="smoke1") OK
+            div Smoke-Sensor 2:
+                span(id="smoke2") ALARM
+        fieldset
+            legend Console
+            #console-out(style="max-height: 190px; overflow-y: scroll")

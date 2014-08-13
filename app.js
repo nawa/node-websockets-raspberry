@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -14,7 +13,7 @@ var app_websocket = require('./lib/websocket')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('view engine', 'jade');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -24,7 +23,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,7 +40,8 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: err
+            error: err,
+            title: 'Websockets on Rasberry demo'
         });
     });
 }
@@ -53,13 +52,16 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
-        error: {}
+        error: {},
+        title: 'Websockets on Rasberry demo'
     });
 });
 
 module.exports.app = app;
 
 module.exports.init = function(callback){
+    //run fake fill db process
+    require('./lib/fake-db-filler')(1000);
     var server = app.listen(app.get('port'), callback);
     app_websocket.listen(server);
     return server;
