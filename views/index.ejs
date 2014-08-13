@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="application/javascript" src="javascripts/index.js"></script>
+</head>
+<body>
+<p>Refresh every
+    <span id="times-label">3s</span>
+    <input type="number" name="times" id="times" min="1" max="60" step="1" value="3">
+</p>
+
+<p>
+<fieldset>
+    <legend>Sensor information</legend>
+    <div>
+        Temp-Sensor 1:
+        <span id="temp1">111</span>
+    </div>
+    <div>
+        Temp-Sensor 2:
+        <span id="temp2">111</span>
+    </div>
+    <div>
+        Door-Sensor 1:
+        <span id="door1">Open</span>
+    </div>
+    <div>
+        Door-Sensor 2:
+        <span id="door2">Closed</span>
+    </div>
+    <div>
+        Smoke-Sensor 1:
+        <span id="smoke1">OK</span>
+    </div>
+    <div>
+        Smoke-Sensor 2:
+        <span id="smoke2">ALARM</span>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Console</legend>
+    <div id="console-out" style="max-height: 190px; overflow-y: scroll">
+    </div>
+</fieldset>
+</p>
+</body>
+</html>
