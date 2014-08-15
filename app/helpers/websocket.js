@@ -1,5 +1,6 @@
 var usage = require('usage'),
-    sensors = require('./sensor-dao');
+    sensors = require('../dao/sensors'),
+    random = require('random-js')();
 var io,
     connectionsArray = [],
     pollingTimer;
@@ -9,26 +10,24 @@ const DEFAULT_REFRESH_INTERVAL = 3;
 var pollingLoop = function() {
     if (connectionsArray.length) {
         pollingTimer = setTimeout(pollingLoop, 1000);
-        /*var pid = process.pid;
+        var pid = process.pid;
         usage.lookup(pid, function(err, result) {
-            updateSockets({
-                temp1: Math.random(),
-                temp2: Math.random(),
-                door1: Math.random(),
-                door2: Math.random(),
-                smoke1: Math.random(),
-                smoke2: Math.random(),
-                info:{
-                    mem: result.memory,
-                    cpu: result.cpu
-                }
+            //unsupported OS
+            var info = {};
+            if(err){
+                info.mem = process.memoryUsage().heapTotal;
+            }else{
+                info.mem = result.memory;
+                info.cpu = result.cpu;
+            }
+            //TODO remove to 1 on prod
+            var randomPosition = random.integer(1, 100);
+            sensors.getValues(randomPosition, function(err, result){
+                if(err) return updateSockets({});
+                //TODO unsafe result change. use extend
+                result.info = info;
+                updateSockets(result);
             });
-        });*/
-        sensors.getValues(function(err, result){
-            if(err) return updateSockets({});
-            //TODO unsafe result change. use extend
-            result.info = "info: " + new Date();
-            updateSockets(result);
         });
     }
 };
@@ -39,8 +38,9 @@ var updateSockets = function(data) {
         if(socket.refreshInterval){
             refreshInterval = socket.refreshInterval;
         }
+        var sec = new Date().getSeconds();
         if(new Date().getSeconds() % refreshInterval == 0){
-            socket.volatile.emit('notification', data);
+            socket.volatile.emit('sensors', data);
         }
     });
 };
@@ -52,6 +52,9 @@ module.exports.listen = function (app) {
         var onStart = connectionsArray.length == 0;
         connectionsArray.push(socket);
         if (onStart) {
+            if(pollingTimer){
+                clearTimeout(pollingTimer);
+            }
             pollingLoop();
         }
 

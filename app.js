@@ -5,14 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var routes = require('./app/controllers/index');
 
 var app = express();
 
-var app_websocket = require('./lib/websocket')
-
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.resolve('./app/views'));
 app.set('view engine', 'jade');
 
 app.use(favicon());
@@ -61,8 +59,8 @@ module.exports.app = app;
 
 module.exports.init = function(callback){
     //run fake fill db process
-    require('./lib/fake-db-filler')(1000);
+    require('./app/helpers/fake-db-filler')(1000);
     var server = app.listen(app.get('port'), callback);
-    app_websocket.listen(server);
+    require('./app/helpers/websocket').listen(server);
     return server;
 };

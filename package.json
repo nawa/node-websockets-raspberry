@@ -15,6 +15,7 @@
     "socket.io": "~1.0.6",
     "usage": "*",
     "sqlite3": "~2",
-    "jade": "~1"
+    "jade": "~1",
+    "random-js": "^1.0.4"
   }
 }
