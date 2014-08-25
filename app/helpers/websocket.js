@@ -22,15 +22,15 @@ var pollingLoop = function() {
             }
             var clients = getClientsForPush();
             if(clients.length){
-                //TODO remove to 1 on prod
-                var randomPosition = random.integer(1, 100);
-                sensors.getValues(randomPosition, function(err, result){
-                    if(err) return updateSockets({});
-                    //TODO unsafe result change. use extend
-                    result.info = info;
+            //TODO remove to 1 on prod
+            var randomPosition = random.integer(1, 100);
+            sensors.getValues(randomPosition, function(err, result){
+                if(err) return updateSockets({});
+                //TODO unsafe result change. use extend
+                result.info = info;
                     updateSockets(getClientsForPush(), result);
-                    delete result;
-                });
+                delete result;
+            });
             }
         });
     }
@@ -50,7 +50,7 @@ var getClientsForPush = function(){
         }
         return new Date().getSeconds() % refreshInterval == 0;
     });
-}
+        }
 
 module.exports.listen = function (app) {
     io = require('socket.io')(app);
