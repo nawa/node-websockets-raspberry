@@ -20,31 +20,38 @@ var pollingLoop = function() {
                 info.mem = result.memory;
                 info.cpu = result.cpu;
             }
-            //TODO remove to 1 on prod
-            var randomPosition = random.integer(1, 100);
-            sensors.getValues(randomPosition, function(err, result){
-                if(err) return updateSockets({});
-                //TODO unsafe result change. use extend
-                result.info = info;
-                updateSockets(result);
-                delete result;
-            });
+            var clients = getClientsForPush();
+            if(clients.length){
+                //TODO remove to 1 on prod
+                var randomPosition = random.integer(1, 100);
+                sensors.getValues(randomPosition, function(err, result){
+                    console.warn(new Date().getSeconds());
+                    if(err) return updateSockets({});
+                    //TODO unsafe result change. use extend
+                    result.info = info;
+                    updateSockets(getClientsForPush(), result);
+                    delete result;
+                });
+            }
         });
     }
 };
 
-var updateSockets = function(data) {
-    connectionsArray.forEach(function(socket) {
+var updateSockets = function(clients, data) {
+    clients.forEach(function(socket) {
+        socket.volatile.emit('sensors', data);
+    });
+};
+
+var getClientsForPush = function(){
+    return connectionsArray.filter(function(socket) {
         var refreshInterval = DEFAULT_REFRESH_INTERVAL;
         if(socket.refreshInterval){
             refreshInterval = socket.refreshInterval;
         }
-        var sec = new Date().getSeconds();
-        if(new Date().getSeconds() % refreshInterval == 0){
-            socket.volatile.emit('sensors', data);
-        }
+        return new Date().getSeconds() % refreshInterval == 0;
     });
-};
+}
 
 module.exports.listen = function (app) {
     io = require('socket.io')(app);
