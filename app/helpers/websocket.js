@@ -27,6 +27,7 @@ var pollingLoop = function() {
                 //TODO unsafe result change. use extend
                 result.info = info;
                 updateSockets(result);
+                delete result;
             });
         });
     }

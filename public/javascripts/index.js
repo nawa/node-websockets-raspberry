@@ -12,11 +12,16 @@
             if(data.info.time){
                 logMessage += 'Time: ' + data.info.time + '; ';
             }
+
             if(data.info.cpu){
-                logMessage += 'CPU: ' + data.info.cpu + '; ';
+                var value = parseFloat(data.info.cpu);
+                value = Math.round(value * 100) / 100;
+                logMessage += 'CPU: ' + value + '%; ';
             }
             if(data.info.mem){
-                logMessage += 'Mem: ' + data.info.mem + '; ';
+                var value = parseInt(data.info.mem);
+                value = Math.floor(value / 1024);
+                logMessage += 'Memory: ' + (value + '').replace(/\B(?=(\d{3})+(?!\d))/g, " ") + 'Kb; ';
             }
             $('#console-out').append('<p>' + logMessage + '</p>');
             if($('#console-out').children().size() > 100){
